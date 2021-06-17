@@ -31,9 +31,7 @@ import org.apache.skywalking.apm.plugin.jdk.threading.ThreadingConfig;
 
 import java.util.Arrays;
 
-import static net.bytebuddy.matcher.ElementMatchers.any;
-import static net.bytebuddy.matcher.ElementMatchers.named;
-import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
+import static net.bytebuddy.matcher.ElementMatchers.*;
 import static org.apache.skywalking.apm.agent.core.plugin.match.HierarchyMatch.byHierarchyMatch;
 
 public class CallableInstrumentation extends ClassEnhancePluginDefine {
@@ -51,45 +49,45 @@ public class CallableInstrumentation extends ClassEnhancePluginDefine {
             return null;
         }
 
-        return LogicalMatchOperation.and(prefixMatches, byHierarchyMatch(Arrays.asList(CALLABLE_CALL_METHOD),CALLABLE_CLASS));
+        return LogicalMatchOperation.and(prefixMatches, byHierarchyMatch(Arrays.asList(CALLABLE_CALL_METHOD), CALLABLE_CLASS));
     }
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
-        return new ConstructorInterceptPoint[] {
-            new ConstructorInterceptPoint() {
-                @Override
-                public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                    return any();
-                }
+        return new ConstructorInterceptPoint[]{
+                new ConstructorInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getConstructorMatcher() {
+                        return any();
+                    }
 
-                @Override
-                public String getConstructorInterceptor() {
-                    return CALLABLE_CLASS_INTERCEPTOR;
+                    @Override
+                    public String getConstructorInterceptor() {
+                        return CALLABLE_CLASS_INTERCEPTOR;
+                    }
                 }
-            }
         };
     }
 
     @Override
     public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
-        return new InstanceMethodsInterceptPoint[] {
-            new InstanceMethodsInterceptPoint() {
-                @Override
-                public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named(CALLABLE_CALL_METHOD).and(takesArguments(0));
-                }
+        return new InstanceMethodsInterceptPoint[]{
+                new InstanceMethodsInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        return named(CALLABLE_CALL_METHOD).and(takesArguments(0));
+                    }
 
-                @Override
-                public String getMethodsInterceptor() {
-                    return CALLABLE_CALL_METHOD_INTERCEPTOR;
-                }
+                    @Override
+                    public String getMethodsInterceptor() {
+                        return CALLABLE_CALL_METHOD_INTERCEPTOR;
+                    }
 
-                @Override
-                public boolean isOverrideArgs() {
-                    return false;
+                    @Override
+                    public boolean isOverrideArgs() {
+                        return false;
+                    }
                 }
-            }
         };
     }
 
